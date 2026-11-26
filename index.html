@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reproductor · Taller</title>
+<meta name="description" content="Reproduce cualquier video por su dirección, con audios y subtítulos extra, y guarda listas de reproducción.">
+<meta name="theme-color" content="#1a1611">
+<link rel="icon" href="icono.svg" type="image/svg+xml">
+<link rel="preload" href="fuentes/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="estilo.css?v=1">
+</head>
+<body>
+<header class="barra">
+  <a class="marca" href="./" aria-label="Reproductor, inicio">Repro<b>ductor</b></a>
+  <form class="ruta" id="formRuta" method="get" action="./" role="search">
+    <label class="oculto" for="rutaRapida">Ruta o dirección del video</label>
+    <input id="rutaRapida" name="video" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="Pega la ruta de un video">
+    <button class="btn" type="submit">Reproducir</button>
+  </form>
+  <button class="btn2" id="btnFichero" type="button" aria-controls="ficha">Mis listas <span class="cnt" id="cntListas">0</span></button>
+</header>
+
+<main class="mesa">
+  <section class="escenario" id="escenario" aria-label="Video">
+    <div class="vacio" id="vacio">
+      <h1>Pega la ruta de un video y míralo aquí</h1>
+      <p>Funciona con un enlace directo a un archivo (.mp4, .webm, .m4v) o con el enlace de una película de Butaca. No se sube nada: el video se ve desde donde está.</p>
+      <form class="mas-opciones" id="formLargo" method="get" action="./">
+        <label>Ruta o dirección del video<input name="video" type="text" inputmode="url" autocomplete="off" spellcheck="false" required placeholder="https://… o carpeta/video.mp4"></label>
+        <div class="dos">
+          <label><span>Título <span class="opc">(opcional)</span></span><input name="titulo" type="text" autocomplete="off"></label>
+          <label><span>Empezar en <span class="opc">(segundos)</span></span><input name="t" type="number" min="0" step="1" inputmode="numeric"></label>
+        </div>
+        <fieldset id="extAudio"><legend>Otros audios</legend></fieldset>
+        <fieldset id="extSub"><legend>Subtítulos .vtt</legend></fieldset>
+        <div class="acciones">
+          <button type="button" class="enlace" data-mas="audio">Agregar audio</button>
+          <button type="button" class="enlace" data-mas="sub">Agregar subtítulos</button>
+          <span class="sp"></span>
+          <button class="btn" type="submit">Reproducir</button>
+        </div>
+      </form>
+      <details class="ayuda">
+        <summary>Abrir un video directo con un enlace</summary>
+        <p>Todo lo del formulario también va en la dirección, así puedes compartirla:</p>
+        <code>reproductor.taller.ink/?video=RUTA&amp;titulo=Nombre&amp;t=90&amp;audio=RUTA&amp;audionombre=Inglés&amp;sub=RUTA.vtt&amp;subtitulo=Español</code>
+        <p><b>audio</b> y <b>sub</b> se pueden repetir. Si no les pones nombre, el idioma sale del archivo: <i>peli.es.vtt</i> se llama Español.</p>
+      </details>
+    </div>
+  </section>
+
+  <aside class="ficha" id="ficha" aria-live="polite"></aside>
+</main>
+
+<div class="aviso" id="aviso" role="status" hidden></div>
+<script src="reproductor.js?v=1"></script>
+<script src="cuenta.js?v=1"></script>
+<script src="app.js?v=1"></script>
+</body>
+</html>
