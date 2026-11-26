@@ -143,7 +143,7 @@ function pintarLista() {
     ${vista.agregando ? formAgregar() : ''}
     <div class="pie">
       ${vista.agregando ? '' : `<button type="button" class="bf lleno" data-a="agregar">${ICO.mas}Agregar video</button>`}
-      ${vista.avisoCompartir ? `<div class="conf"><span>Esta lista tiene películas de Butaca. Quien abra el enlace podrá verlas sin iniciar sesión.</span><button type="button" class="bf" data-a="noCompartir">Cancelar</button><button type="button" class="bf lleno" data-a="compartir">Copiar igual</button></div>`
+      ${vista.avisoCompartir ? `<div class="conf"><span>Las películas de Butaca no van en el enlace (sus enlaces son personales). Se comparten solo los otros ${videos(its.filter(x => !esButaca(x.video)).length)}.</span><button type="button" class="bf" data-a="noCompartir">Cancelar</button>${its.some(x => !esButaca(x.video)) ? '<button type="button" class="bf lleno" data-a="compartir">Copiar sin ellas</button>' : ''}</div>`
         : its.length ? `<button type="button" class="bf" data-a="compartir">${ICO.enlace}Copiar enlace</button>` : ''}
       ${its.some(i => i.visto) ? `<button type="button" class="bf" data-a="limpiar">Quitar timbres</button>` : ''}
       ${vista.confirmar ? `<div class="conf"><span>¿Borrar la lista «${esc(l.nombre)}»? Los videos no se borran, solo la ficha.</span><button type="button" class="bf" data-a="no">Cancelar</button><button type="button" class="bf peligro" data-a="borrar">Borrar lista</button></div>`
@@ -255,13 +255,14 @@ ficha.addEventListener('drop', e => { const li = e.target.closest('.it[data-id]'
 const b64 = s => btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const deB64 = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0)));
 async function compartir(l) {
-  const datosL = { n: l.nombre, i: l.items.map(x => [x.video, x.titulo || '', (x.audio || []).map(a => [a.src, a.nombre || '']), (x.sub || []).map(s => [s.src, s.nombre || ''])]) };
+  // Las películas de Butaca nunca van en el enlace: su ruta lleva una firma que deja verlas sin iniciar sesión
+  const datosL = { n: l.nombre, i: l.items.filter(x => !esButaca(x.video)).map(x => [x.video, x.titulo || '', (x.audio || []).map(a => [a.src, a.nombre || '']), (x.sub || []).map(s => [s.src, s.nombre || ''])]) };
   const url = location.origin + location.pathname + '?l=' + b64(JSON.stringify(datosL));
   try { await navigator.clipboard.writeText(url); aviso('Enlace copiado: quien lo abra ve esta lista y puede guardarla.'); }
   catch { prompt('Copia este enlace:', url); }
 }
 function leerRecibida(s) {
-  try { const d = JSON.parse(deB64(s)); return { nombre: String(d.n || 'Lista compartida').slice(0, 80), items: (d.i || []).map(([video, titulo, au, su]) => ({ id: nuevoId(), video: segura(video), titulo: String(titulo || ''), audio: (au || []).map(([src, nombre]) => ({ src: segura(src), nombre })).filter(x => x.src), sub: (su || []).map(([src, nombre]) => ({ src: segura(src), nombre })).filter(x => x.src) })).filter(x => x.video) }; }
+  try { const d = JSON.parse(deB64(s)); return { nombre: String(d.n || 'Lista compartida').slice(0, 80), items: (d.i || []).filter(([video]) => !esButaca(segura(video) || '')).map(([video, titulo, au, su]) => ({ id: nuevoId(), video: segura(video), titulo: String(titulo || ''), audio: (au || []).map(([src, nombre]) => ({ src: segura(src), nombre })).filter(x => x.src), sub: (su || []).map(([src, nombre]) => ({ src: segura(src), nombre })).filter(x => x.src) })).filter(x => x.video) }; }
   catch { return null; }
 }
 
