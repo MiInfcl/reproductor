@@ -251,7 +251,7 @@ function lista(titulo, ops, sel, fn, nota) {
   menu.innerHTML = '';
   const h = document.createElement('button'); h.type = 'button'; h.className = 'h'; h.innerHTML = IC.left + esc(titulo); h.onclick = e => { e.stopPropagation(); menuPrincipal(); }; menu.append(h);
   ops.forEach((o, i) => { const b = document.createElement('button'); b.type = 'button'; b.innerHTML = `<span class="ck">${i === sel ? IC.check : ''}</span>${esc(o)}`; b.onclick = e => { e.stopPropagation(); fn(i); menuPrincipal(); }; menu.append(b); });
-  if (nota) { const n = document.createElement('div'); n.style.cssText = 'padding:8px 10px 4px;font-size:.78rem;color:#93a4c2;max-width:230px'; n.textContent = nota; menu.append(n); }
+  if (nota) { const n = document.createElement('div'); n.style.cssText = 'padding:8px 10px 4px;font-size:.78rem;color:#cbbf9f;max-width:230px'; n.textContent = nota; menu.append(n); }
 }
 
 // --- Calidad ---
